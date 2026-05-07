@@ -1,17 +1,38 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
+
+import { useAtom } from "jotai";
 
 import { authRepository } from "../modules/auth/auth.repository";
+import { currentUserAtom } from "../modules/auth/current-user.state";
 import "../styles/pages/auth.css";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signup = async () => {
-    const { user, token } = await authRepository.signup(name, email, password);
-    console.log(user, token);
+    try {
+      setIsSubmitting(true);
+      const { user, token } = await authRepository.signup(
+        name,
+        email,
+        password,
+      );
+      setCurrentUser(user);
+      localStorage.setItem("token", token);
+    } catch (error) {
+      console.log(error);
+      alert("登録に失敗しました。");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (currentUser) return <Navigate to="/" replace />;
 
   return (
     <div className="auth-container">
@@ -74,7 +95,7 @@ export default function Signup() {
               <div>
                 <button
                   onClick={signup}
-                  disabled={!name || !email || !password} // trueにならないと無効にするバリデーション
+                  disabled={!name || !email || !password || isSubmitting} // 指定した内容がtrueの間は無効
                   className="home-button"
                   style={{ width: "100%" }}
                 >

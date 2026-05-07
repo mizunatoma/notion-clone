@@ -1,16 +1,33 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
-import "../styles/pages/auth.css";
+import { useAtom } from "jotai";
+
 import { authRepository } from "../modules/auth/auth.repository";
+import { currentUserAtom } from "../modules/auth/current-user.state";
+import "../styles/pages/auth.css";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const signin = async () => {
+  const signin = async () => {
+    try {
+      setIsSubmitting(true);
       const { user, token } = await authRepository.signin(email, password);
-      console.log(user, token);
-    };
+      setCurrentUser(user);
+      localStorage.setItem("token", token);
+    } catch (error) {
+      console.log(error);
+      alert("ログインに失敗しました。");
+    } finally {
+      setIsSubmitting(true);
+    }
+  };
+
+  if (currentUser) return <Navigate to="/" replace />;
 
   return (
     <div className="auth-container">
@@ -56,7 +73,7 @@ export default function Signin() {
               <div>
                 <button
                   onClick={signin}
-                  disabled={!email || !password}
+                  disabled={!email || !password || isSubmitting}
                   className="home-button"
                   style={{ width: "100%" }}
                 >
