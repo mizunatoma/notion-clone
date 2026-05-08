@@ -14,8 +14,8 @@ export default function Signin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signin = async () => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
       const { user, token } = await authRepository.signin(email, password);
       setCurrentUser(user);
       localStorage.setItem("token", token);

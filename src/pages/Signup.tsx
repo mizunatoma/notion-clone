@@ -15,8 +15,8 @@ export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signup = async () => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
       const { user, token } = await authRepository.signup(
         name,
         email,
