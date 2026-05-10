@@ -18,8 +18,12 @@ export default function NoteList({ layer = 0, parentId }: Props) {
   const createChild = async (e: React.MouseEvent, parentId: number) => {
     e.preventDefault();
     const newNote = await noteRepository.create({ parentId });
-    console.log(newNote);
     noteStore.set([newNote]);
+    setExpanded((prev) => {
+      const newExpanded = new Map(prev); // prevのコピー
+      newExpanded.set(parentId, true); // コピーを変更
+      return newExpanded; // 新しい参照を返す
+    });
   };
 
   const fetchChildren = async (e: React.MouseEvent, note: Note) => {
@@ -47,6 +51,7 @@ export default function NoteList({ layer = 0, parentId }: Props) {
                 onCreate={(e) => createChild(e, note.id)}
                 onExpand={(e) => fetchChildren(e, note)}
                 layer={layer}
+                expanded={expanded.get(note.id)}
               />
               {expanded.get(note.id) && (
                 <NoteList layer={layer + 1} parentId={note.id} />
