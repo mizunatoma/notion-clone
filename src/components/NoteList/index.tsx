@@ -1,8 +1,14 @@
+import type { Note } from "../../modules/notes/note.entity";
 import { noteRepository } from "../../modules/notes/note.repository";
 import { useNoteStore } from "../../modules/notes/note.state";
 import NoteItem from "./NoteItem";
 
-export default function NoteList() {
+interface Props {
+  layer?: number;
+  parentId?: number;
+}
+
+export default function NoteList({ layer = 0, parentId }) {
   const noteStore = useNoteStore();
   const notes = noteStore.getAll();
 
@@ -13,7 +19,7 @@ export default function NoteList() {
     noteStore.set([newNote]);
   };
 
-  const fetchChildren = async (e: Rreact.MouseEvent, note: Note) => {
+  const fetchChildren = async (e: React.MouseEvent, note: Note) => {
     e.preventDefault();
     const children = await noteRepository.find({ parentId: note.id });
     if (children == null) return;
@@ -24,14 +30,19 @@ export default function NoteList() {
   return (
     <>
       <div>
-        {notes.map((note) => (
-          <NoteItem
-            key={note.id}
-            note={note}
-            onCreate={(e) => createChild(e, note.id)}
-            onExpand={(e) => fetchChildren(e, note)}
-          />
-        ))}
+        {notes
+          .filter((note) => note.parentId == parentId)
+          .map((note) => (
+            <div key={note.id}>
+              <NoteItem
+                note={note}
+                onCreate={(e) => createChild(e, note.id)}
+                onExpand={(e) => fetchChildren(e, note)}
+                layer={layer}
+              />
+              <NoteList layer={layer + 1} parentId={note.id} />
+            </div>
+          ))}
       </div>
     </>
   );
