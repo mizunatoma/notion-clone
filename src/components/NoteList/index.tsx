@@ -19,6 +19,7 @@ export default function NoteList({ layer = 0, parentId }: Props) {
     e.preventDefault();
     const newNote = await noteRepository.create({ parentId });
     noteStore.set([newNote]);
+    // 子ファイル作成時に親を展開する
     setExpanded((prev) => {
       const newExpanded = new Map(prev); // prevのコピー
       newExpanded.set(parentId, true); // コピーを変更

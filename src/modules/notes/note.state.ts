@@ -6,10 +6,11 @@ const notesAtom = atom<Note[]>([]);
 
 export const useNoteStore = () => {
   const [notes, setNotes] = useAtom(notesAtom);
-  const getAll = () => notes;
 
+  const getAll = () => notes;
+  const getOne = (id: number) => notes.find((note) => note.id === id);
   const set = (newNotes: Note[]) => {
-    setNotes((oldNotes) => { //
+    setNotes((oldNotes) => {
       const combineNotes = [...oldNotes, ...newNotes];
       const uniqueNotes: { [key: number]: Note } = {};
       for (const note of combineNotes) {
@@ -19,7 +20,7 @@ export const useNoteStore = () => {
     });
   };
 
-  return { getAll, set };
+  return { getAll, getOne, set };
 };
 
 // 使用時
