@@ -21,9 +21,10 @@ import {
 interface Props {
   note: Note;
   onCreate?: (event: React.MouseEvent) => void;
+  onExpand?: (event: React.MouseEvent) => void;
 }
 
-export default function NoteItem({ note, onCreate }: Props) {
+export default function NoteItem({ note, onCreate, onExpand }: Props) {
   const [isHovered, setIsHovered] = useState(false);
 
   const getIcon = (): IconType => {
@@ -63,7 +64,12 @@ export default function NoteItem({ note, onCreate }: Props) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Item label={note.title ?? "無題"} icon={getIcon()} trailingItem={menu} />
+      <Item
+        label={note.title ?? "無題"}
+        icon={getIcon()}
+        trailingItem={menu}
+        onIconClick={onExpand}
+      />
     </div>
   );
 }

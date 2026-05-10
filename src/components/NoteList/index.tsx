@@ -13,6 +13,14 @@ export default function NoteList() {
     noteStore.set([newNote]);
   };
 
+  const fetchChildren = async (e: Rreact.MouseEvent, note: Note) => {
+    e.preventDefault();
+    const children = await noteRepository.find({ parentId: note.id });
+    if (children == null) return;
+    console.log(children);
+    noteStore.set(children);
+  };
+
   return (
     <>
       <div>
@@ -21,6 +29,7 @@ export default function NoteList() {
             key={note.id}
             note={note}
             onCreate={(e) => createChild(e, note.id)}
+            onExpand={(e) => fetchChildren(e, note)}
           />
         ))}
       </div>
