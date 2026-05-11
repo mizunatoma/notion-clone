@@ -24,13 +24,25 @@ export default function NoteDetail() {
     fetchOne();
   }, [id]);
 
+  const updateNote = async (
+    id: number,
+    note: { title?: string; content?: string },
+  ) => {
+    const updateNote = await noteRepository.update(id, note);
+    noteStore.set([updateNote]); //
+    return updateNote;
+  };
+
   if (isLoading) return <div />;
   if (!note) return <div>note is not existed</div>;
 
   return (
     <div className="note-detail-container">
       <div className="note-detail-content">
-        <TitleInput initialData={note} />
+        <TitleInput
+          initialData={note}
+          onTitleChange={(title) => updateNote(id, { title })}
+        />
       </div>
     </div>
   );

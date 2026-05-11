@@ -24,4 +24,12 @@ export const noteRepository = {
     const result = await api.get(`/notes/${id}`);
     return new Note(result.data);
   },
+
+  async update(
+    id: number,
+    note: { title?: string; content?: string }, // 更新内容
+  ): Promise<Note> {
+    const result = await api.patch(`/notes/${id}`, note);
+    return new Note(result.data);
+  },
 };
