@@ -6,6 +6,7 @@ import { useAtomValue } from "jotai";
 import SearchModal from "./components/SearchModal";
 import SideBar from "./components/SideBar";
 import { currentUserAtom } from "./modules/auth/current-user.state";
+import type { Note } from "./modules/notes/note.entity";
 import { noteRepository } from "./modules/notes/note.repository";
 import { useNoteStore } from "./modules/notes/note.state";
 import "./styles/layout.css";
@@ -15,6 +16,7 @@ export default function Layout() {
   const [isLoading, setIsLoading] = useState(false);
   const noteStore = useNoteStore();
   const [isShowModal, setIsShowModal] = useState(false);
+  const [searchResult, setSearchResult] = useState<Note[]>([]);
 
   const fetchNotes = async () => {
     setIsLoading(true);
@@ -27,15 +29,23 @@ export default function Layout() {
     fetchNotes();
   }, []);
 
+  const serchNotes = async (keyword: string) => {
+    const notes = await noteRepository.find({ keyword });
+    noteStore.set(notes);
+    setSearchResult(notes ?? []);
+  };
+
   if (!currentUser) return <Navigate to="/signin" replace />;
 
   return (
     <div className="layout-container">
-      {!isLoading && <SideBar onSearchButtonClick={() => setIsShowModal(true)}/>}
+      {!isLoading && (
+        <SideBar onSearchButtonClick={() => setIsShowModal(true)} />
+      )}
       <main className="layout-main">
         <Outlet />
       </main>
-      <SearchModal isOpen={isShowModal} onClose={() => setIsShowModal(false)}/>
+      <SearchModal isOpen={isShowModal} onClose={() => setIsShowModal(false)} />
     </div>
   );
 }
