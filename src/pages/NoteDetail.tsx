@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { Editor } from "../components/Editor";
 import TitleInput from "../components/TitleInput";
 import { noteRepository } from "../modules/notes/note.repository";
 import { useNoteStore } from "../modules/notes/note.state";
@@ -42,6 +43,10 @@ export default function NoteDetail() {
         <TitleInput
           initialData={note}
           onTitleChange={(title) => updateNote(id, { title })}
+        />
+        <Editor
+          initialContent={note.content}
+          onChange={(content) => updateNote(id, { content })}
         />
       </div>
     </div>
