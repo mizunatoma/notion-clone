@@ -1,3 +1,5 @@
+import { useDebouncedCallback } from "use-debounce";
+
 import type { Note } from "../modules/notes/note.entity";
 import {
   Command,
@@ -22,12 +24,15 @@ export default function SearchModal({
   notes,
   onKeywordChange,
 }: Props) {
+  // npm install use-debounce
+  const debounced = useDebouncedCallback(onKeywordChange, 500);
+
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
       <Command shouldFilter={false}>
         <CommandInput
           placeholder={"キーワードで検索"}
-          onValueChange={onKeywordChange}
+          onValueChange={debounced}
         />
         <CommandList>
           <CommandEmpty>条件に一致するノートがありません</CommandEmpty>
