@@ -29,7 +29,7 @@ export default function Layout() {
     fetchNotes();
   }, []);
 
-  const serchNotes = async (keyword: string) => {
+  const searchNotes = async (keyword: string) => {
     const notes = await noteRepository.find({ keyword });
     noteStore.set(notes);
     setSearchResult(notes ?? []);
@@ -45,7 +45,12 @@ export default function Layout() {
       <main className="layout-main">
         <Outlet />
       </main>
-      <SearchModal isOpen={isShowModal} onClose={() => setIsShowModal(false)} />
+      <SearchModal
+        isOpen={isShowModal}
+        onClose={() => setIsShowModal(false)}
+        notes={searchResult}
+        onKeywordChange={searchNotes}
+      />
     </div>
   );
 }
