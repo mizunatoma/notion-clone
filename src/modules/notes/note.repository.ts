@@ -21,7 +21,7 @@ export const noteRepository = {
   },
 
   async findOne(id: number): Promise<Note> {
-    const result = await api.get(`/note/${id}`);
+    const result = await api.get(`/notes/${id}`);
     return new Note(result.data);
   },
 };

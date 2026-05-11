@@ -1,4 +1,5 @@
 import { FiPlus, FiSearch } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 import { noteRepository } from "../../modules/notes/note.repository";
 import { useNoteStore } from "../../modules/notes/note.state";
@@ -8,11 +9,13 @@ import UserItem from "./UserItem";
 
 export default function SideBar() {
   const noteStore = useNoteStore();
+  const navigate = useNavigate();
 
   const createNote = async () => {
     try {
-      const newNotes = await noteRepository.create({});
-      noteStore.set([newNotes]);
+      const newNote = await noteRepository.create({});
+      noteStore.set([newNote]);
+      navigate(`/notes/${newNote.id}`);
     } catch (error) {
       console.log(error);
       alert("ノートの作成に失敗しました。");

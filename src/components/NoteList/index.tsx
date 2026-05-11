@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import type { Note } from "../../modules/notes/note.entity";
 import { noteRepository } from "../../modules/notes/note.repository";
@@ -14,6 +15,7 @@ export default function NoteList({ layer = 0, parentId }: Props) {
   const noteStore = useNoteStore();
   const notes = noteStore.getAll();
   const [expanded, setExpanded] = useState<Map<number, boolean>>(new Map());
+  const navigate = useNavigate(); // react-router-domの関数
 
   const createChild = async (e: React.MouseEvent, parentId: number) => {
     e.preventDefault();
@@ -25,6 +27,7 @@ export default function NoteList({ layer = 0, parentId }: Props) {
       newExpanded.set(parentId, true); // コピーを変更
       return newExpanded; // 新しい参照を返す
     });
+    moveToDetail(newNote.id);
   };
 
   const fetchChildren = async (e: React.MouseEvent, note: Note) => {
@@ -40,6 +43,10 @@ export default function NoteList({ layer = 0, parentId }: Props) {
     });
   };
 
+  const moveToDetail = (noteId: number) => {
+    navigate(`/notes/${noteId}`);
+  };
+
   return (
     <>
       <div>
@@ -53,6 +60,7 @@ export default function NoteList({ layer = 0, parentId }: Props) {
                 onExpand={(e) => fetchChildren(e, note)}
                 layer={layer}
                 expanded={expanded.get(note.id)}
+                onClick={() => moveToDetail(note.id)}
               />
               {expanded.get(note.id) && (
                 <NoteList layer={layer + 1} parentId={note.id} />

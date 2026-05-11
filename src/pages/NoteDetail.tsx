@@ -24,10 +24,13 @@ export default function NoteDetail() {
     fetchOne();
   }, [id]);
 
+  if (isLoading) return <div />;
+  if (!note) return <div>note is not existed</div>;
+
   return (
     <div className="note-detail-container">
       <div className="note-detail-content">
-        <TitleInput />
+        <TitleInput initialData={note} />
       </div>
     </div>
   );
