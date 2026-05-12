@@ -20,7 +20,25 @@ export const useNoteStore = () => {
     });
   };
 
-  return { getAll, getOne, set };
+  const deleteNote = (id: number) => {
+    const findChildrenIds = (parentId: number): number[] => {
+      const childrenIds = notes
+        .filter((note) => note.parentId == parentId)
+        .map((child) => child.id);
+      return childrenIds.concat(
+        // 再起処理
+        ...childrenIds.map((childId) => findChildrenIds(childId)),
+      );
+    };
+
+    const childrenIds = findChildrenIds(id);
+    setNotes(
+      (oldNotes) =>
+        oldNotes.filter((note) => ![...childrenIds, id].includes(note.id)), // 親を含む、再起的な子孫Note 以外！をフィルター
+    );
+  };
+
+  return { getAll, getOne, set, delete: deleteNote };
 };
 
 // 使用時

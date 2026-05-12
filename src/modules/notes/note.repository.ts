@@ -36,4 +36,9 @@ export const noteRepository = {
     const result = await api.patch(`/notes/${id}`, note);
     return new Note(result.data);
   },
+
+  async delete(id: number): Promise<boolean> {
+    await api.delete(`/notes/${id}`);
+    return true;
+  },
 };
