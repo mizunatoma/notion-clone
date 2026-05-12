@@ -34,11 +34,14 @@ export const useNoteStore = () => {
     const childrenIds = findChildrenIds(id);
     setNotes(
       (oldNotes) =>
-        oldNotes.filter((note) => ![...childrenIds, id].includes(note.id)), // 親を含む、再起的な子孫Note 以外！をフィルター
+        oldNotes.filter((note) => ![...childrenIds, id].includes(note.id)),
+      // 親を含む、再起的な子孫Note 以外！をフィルター
     );
   };
 
-  return { getAll, getOne, set, delete: deleteNote };
+  const clear = () => setNotes([]);
+
+  return { getAll, getOne, set, delete: deleteNote, clear };
 };
 
 // 使用時
