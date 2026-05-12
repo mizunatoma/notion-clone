@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 import { useAtomValue } from "jotai";
 
@@ -17,6 +17,7 @@ export default function Layout() {
   const noteStore = useNoteStore();
   const [isShowModal, setIsShowModal] = useState(false);
   const [searchResult, setSearchResult] = useState<Note[]>([]);
+  const navigate = useNavigate();
 
   const fetchNotes = async () => {
     setIsLoading(true);
@@ -35,6 +36,11 @@ export default function Layout() {
     setSearchResult(notes ?? []);
   };
 
+  const moveToDetail = (noteId: number) => {
+    navigate(`/notes/${noteId}`);
+    setIsShowModal(false);
+  };
+
   if (!currentUser) return <Navigate to="/signin" replace />;
 
   return (
@@ -50,6 +56,7 @@ export default function Layout() {
         onClose={() => setIsShowModal(false)}
         notes={searchResult}
         onKeywordChange={searchNotes}
+        onItemSelect={moveToDetail}
       />
     </div>
   );
