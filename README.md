@@ -1,73 +1,110 @@
-# React + TypeScript + Vite
+# Notion Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NotionライクなノートアプリをReact + TypeScriptで実装したポートフォリオプロジェクトです。
 
-Currently, two official plugins are available:
+## デモ
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Vercelにデプロイ済み：[https://notion-clone-umber-nu.vercel.app/signin](https://notion-clone-umber-nu.vercel.app/signin)
+※ バックエンド（Render）はスリープ状態の場合があります
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 機能
 
-## Expanding the ESLint configuration
+- ノートの作成・編集・削除
+- 子ノートの再帰的管理（階層構造）
+- BlockNoteエディタによるリッチテキスト編集
+- キーワード検索（デバウンス処理付き）
+- JWT認証（ログイン・ログアウト）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 技術スタック
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Frontend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| 技術             | バージョン | 用途                   |
+| ---------------- | ---------- | ---------------------- |
+| React            | 19         | UIライブラリ           |
+| TypeScript       | 6          | 型安全な開発           |
+| Vite             | 8          | ビルドツール           |
+| React Router DOM | v7         | ルーティング           |
+| BlockNote        | -          | リッチテキストエディタ |
+| cmdk             | -          | コマンドパレット       |
+| Jotai            | -          | 状態管理               |
+| Axios            | -          | HTTPクライアント        |
+| react-icons      | -          | アイコンライブラリ     |
+| use-debounce     | -          | デバウンスフック       |
+
+### Backend (参照用API)
+
+| 技術           | 用途         |
+| -------------- | ------------ |
+| Express v5     | APIサーバー  |
+| TypeORM v0.3   | ORM          |
+| SQLite3        | データベース |
+| JWT / bcryptjs | 認証         |
+
+### インフラ
+
+| サービス | 用途                                 |
+| -------- | ------------------------------------ |
+| Vercel   | フロントエンドホスティング           |
+| Render   | バックエンドAPIサーバー              |
+| AWS EC2  | フロント・バックエンド両方をデプロイ |
+
+---
+
+## 起動方法
+
+### 前提条件
+
+- Node.js 18以上
+- npm
+
+### インストール
+
+```bash
+git clone https://github.com/your-username/notion-clone.git
+cd notion-clone
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 環境変数
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+`.env`ファイルをプロジェクトルートに作成してください：
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=http://localhost:3000
 ```
+
+### 開発サーバー起動
+
+```bash
+npm run dev
+```
+
+ブラウザで `http://localhost:5173` を開きます。
+
+---
+
+## ディレクトリ構成
+
+```
+src/
+├── components/       # 共通UIコンポーネント
+│   └── ui/           # shadcn/ui系プリミティブコンポーネント
+├── modules/          # 機能モジュール（auth・notes・usersなど）
+├── pages/            # ページコンポーネント
+├── lib/              # ユーティリティ・APIクライアント
+├── styles/           # グローバルスタイル
+├── App.tsx
+├── Layout.tsx
+└── main.tsx
+```
+
+---
+
+## ライセンス
+
+MIT
